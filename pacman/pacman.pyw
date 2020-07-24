@@ -64,6 +64,8 @@ ghostcolor[3] = (255, 128, 0, 255)
 ghostcolor[4] = (50, 50, 255, 255) # blue, vulnerable ghost
 ghostcolor[5] = (255, 255, 255, 255) # white, flashing ghost
 
+outputLog = open("soundeffectlog.txt", "w")
+
 #      ___________________
 # ___/  class definitions  \_______________________________________________
 
@@ -196,6 +198,7 @@ class game ():
         
         self.SetMode( 4 )
         thisLevel.LoadLevel( thisGame.GetLevelNum() )
+        outputLog.write("Game Start! ")
             
     def AddToScore (self, amount):
         
@@ -205,6 +208,7 @@ class game ():
             if self.score < specialScore and self.score + amount >= specialScore:
                 snd_extralife.play()
                 thisGame.lives += 1
+                outputLog.write("Beoowup! ")
         
         self.score += amount
         
@@ -854,6 +858,7 @@ class pacman ():
                         thisGame.AddToScore(thisGame.ghostValue)
                         thisGame.ghostValue = thisGame.ghostValue * 2
                         snd_eatgh.play()
+                        outputLog.write("Wawirrp! ")
                         
                         ghosts[i].state = 3
                         ghosts[i].speed = ghosts[i].speed * 4
@@ -874,6 +879,7 @@ class pacman ():
                     thisGame.fruitTimer = 0
                     thisGame.fruitScoreTimer = 120
                     snd_eatfruit.play()
+                    outputLog.write("Guhwoop! ")
         
         else:
             # we're going to hit a wall -- stop moving
@@ -1023,6 +1029,12 @@ class level ():
                         # got a pellet
                         thisLevel.SetMapTile(iRow, iCol, 0)
                         snd_pellet[player.pelletSndNum].play()
+                        
+                        if player.pelletSndNum == 0:
+                            outputLog.write("Wa-")
+                        else:
+                            outputLog.write("ka ")
+                        
                         player.pelletSndNum = 1 - player.pelletSndNum
                         
                         thisLevel.pellets -= 1
@@ -1039,7 +1051,7 @@ class level ():
                         # got a power pellet
                         thisLevel.SetMapTile(iRow, iCol, 0)
                         snd_powerpellet.play()
-                        
+                        outputLog.write("Brlilil ")
                         thisGame.AddToScore(100)
                         thisGame.ghostValue = 200
                         
@@ -1492,6 +1504,7 @@ while True:
         thisGame.modeTimer += 1
         
         if thisGame.modeTimer == 90:
+            outputLog.write("Wre-wre-wre-wreu Wikwik! ")
             thisLevel.Restart()
             
             thisGame.lives -= 1
@@ -1504,6 +1517,7 @@ while True:
                 
     elif thisGame.mode == 3:
         # game over
+        
         CheckInputs()
             
     elif thisGame.mode == 4:
@@ -1557,6 +1571,7 @@ while True:
         # blank screen before changing levels
         thisGame.modeTimer += 1
         if thisGame.modeTimer == 10:
+            outputLog.write("(Stage Clear!) ")
             thisGame.SetNextLevel()
 
     thisGame.SmartMoveScreen()
